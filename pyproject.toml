@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scroll-winding-tracer"
+version = "0.3.0"
+description = "Zero-training, 3D Z-slab verified curved winding-constraint generator for the Vesuvius Challenge"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.12",
+    "zarr>=2.16",
+    "s3fs>=2024.1",
+    "fsspec>=2024.1",
+    "matplotlib>=3.8",
+]
+
+[project.optional-dependencies]
+# segment_qa reads layers-zarr pyramids through zarr 3's FsspecStore (the tracer keeps zarr 2 support)
+segment-qa = [
+    "zarr>=3",
+    "pillow>=10",
+]
+# GPU ink-tolerance calibration only (`segment-qa calibrate` without --reanalyze)
+segment-qa-calibrate = [
+    "zarr>=3",
+    "pillow>=10",
+    "torch>=2.1",
+]
+
+[project.scripts]
+scroll-winding-tracer = "scroll_winding_tracer.cli:main"
+segment-qa = "segment_qa.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["scroll_winding_tracer*", "segment_qa*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
